@@ -46,6 +46,7 @@ export default function Login() {
 
     const clickSubmit = async () => {
         resetForm()
+        navigate('/meeting-view')
     };
 
     return (
