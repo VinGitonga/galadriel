@@ -69,7 +69,7 @@ const Landing = () => {
                                         bg="teal"
                                         color={"gray.900"}
                                         size="lg"
-                                        onClick={() => navigate('/')}
+                                        onClick={() => navigate('/login')}
                                     >
                                         Login
                                     </Button>
@@ -77,7 +77,7 @@ const Landing = () => {
                                         bg="white"
                                         color={"gray.900"}
                                         size="lg"
-                                        onClick={() => navigate('/')}
+                                        onClick={() => navigate('/register')}
                                     >
                                         Register
                                     </Button>
