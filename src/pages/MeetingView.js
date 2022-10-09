@@ -9,31 +9,49 @@ import {
     Tab,
     TabPanel,
     TabPanels,
+    Icon,
+    Square,
+    HStack,
+    Button,
 } from "@chakra-ui/react";
 import Chats from "../components/chats";
 import { BsFillMicFill } from "react-icons/bs";
 import { FcVideoCall } from "react-icons/fc";
+import { ImPhoneHangUp } from "react-icons/im";
 import Navbar from "../components/Navbar";
 import Card from "../components/common/Card";
 import Participant from "../components/participants";
+import ActionsCard from "../components/common/ActionsCard";
 
 const MeetingView = () => {
     return (
         <>
             <Navbar />
-            <Box px={8} py={4} mx="auto" fontFamily={"Poppins"}>
+            <Box px={4} py={4} mx="auto" fontFamily={"Poppins"}>
                 <SimpleGrid
                     w={{ base: "full", xl: 11 / 12 }}
                     columns={{ base: 1, lg: 11 }}
-                    gap={{ base: 0, lg: 16 }}
+                    gap={{ base: 0, lg: 8 }}
                     mx="auto"
                 >
                     <GridItem colSpan={{ base: "auto", md: 7 }}>
-                        <SimpleGrid columns={[1, null, 2]} spacing={"20"}>
+                        <SimpleGrid columns={[1, null, 2]} spacing={"10"}>
                             {[...Array(4)].map((_, i) => (
                                 <Item key={i} />
                             ))}
                         </SimpleGrid>
+                        <HStack my={5} spacing={6} align={"center"} mx={4} >
+                            <ActionsCard />
+                            <Square
+                                color={"white"}
+                                bg={"red.500"}
+                                size={"40px"}
+                                borderRadius={"md"}
+                                as={Button}
+                            >
+                                <Icon as={ImPhoneHangUp} w={7} h={7} />
+                            </Square>
+                        </HStack>
                     </GridItem>
                     <GridItem colSpan={{ base: "auto", lg: 4 }}>
                         <Card>
@@ -74,12 +92,12 @@ const Item = () => (
         direction="column"
         justifyContent="center"
         alignItems="center"
-        w="150"
+        w="130"
         // mx="auto"
     >
         <Box
             bg="gray.300"
-            h={64}
+            h={56}
             w="full"
             rounded="xl"
             shadow="md"

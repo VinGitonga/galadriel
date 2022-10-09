@@ -11,7 +11,7 @@ const Card = ({ children }) => (
     >
         <Box pos="absolute" top={0} w="full" h={1} bgColor={"#3e5b7f"} borderBottomLeftRadius={'lg'} borderBottomRightRadius={'lg'}></Box>
         <Box
-            px={8}
+            px={4}
             py={4}
             rounded="lg"
             shadow="lg"

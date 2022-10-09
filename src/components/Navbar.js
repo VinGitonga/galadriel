@@ -1,8 +1,10 @@
 import { Flex, Icon, Text, Image } from "@chakra-ui/react";
 import { FcVideoCall } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
     let name = "Malcom Whitley";
+    const navigate = useNavigate()
     return (
         <Flex
             fontFamily="Poppins"
@@ -12,7 +14,7 @@ const Navbar = () => {
             w={"100%"}
             px="8"
         >
-            <Flex align="center" py="3">
+            <Flex align="center" py="3" cursor={"pointer"} onClick={() => navigate('/home')} >
                 <Icon w={6} h={6} as={FcVideoCall} mr={3} color={"gray.800"} />
                 <Text fontWeight="semibold" fontSize="lg" color={"teal.500"}>
                     Galadriel

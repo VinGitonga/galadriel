@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import MeetingView from "./pages/MeetingView";
@@ -20,5 +21,9 @@ export const router = createBrowserRouter([
     {
         path: "/meeting-view",
         element: <MeetingView />,
+    },
+    {
+        path: "/home",
+        element: <Home />,
     },
 ]);

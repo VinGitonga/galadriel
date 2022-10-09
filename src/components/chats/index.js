@@ -18,7 +18,7 @@ const Feed = () => {
                 maxH={"70vh"}
                 h={"full"}
                 w={"full"}
-                padding={"24px"}
+                padding={"4"}
                 overflowY={"scroll"}
             >
                 {[...Array(10)].map((_, i) => (
