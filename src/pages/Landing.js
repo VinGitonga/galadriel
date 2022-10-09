@@ -6,14 +6,12 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 
 
 const Landing = () => {
     const navigate = useNavigate()
     return (
         <>
-            <Navbar />
             <Box pos="relative" overflow="hidden" bg={"#1a202c"} h={"100vh"} fontFamily={"Poppins"}>
                 <Box maxW="7xl" mx="auto">
                     <Box

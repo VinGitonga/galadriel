@@ -1,10 +1,13 @@
 import { Flex, Icon, Text, Image } from "@chakra-ui/react";
 import { FcVideoCall } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/auth"
 
 const Navbar = () => {
-    let name = "Malcom Whitley";
+    // let name = "Malcom Whitley";
     const navigate = useNavigate()
+    const { authUser } = useAuth()
+    console.log(authUser)
     return (
         <Flex
             fontFamily="Poppins"
@@ -26,13 +29,13 @@ const Navbar = () => {
                         h={10}
                         fit="cover"
                         rounded="full"
-                        src={`https://avatars.dicebear.com/api/adventurer/${name
-                            .toLowerCase()
-                            .replaceAll(" ", "")}.svg`}
+                        src={`https://avatars.dicebear.com/api/adventurer/${authUser?.name
+                            ?.toLowerCase()
+                            ?.replaceAll(" ", "")}.svg`}
                         alt="Avatar"
                     />
                     <Text mx={2} fontWeight="bold" color="gray.700">
-                        {"Malcom Whitley"}
+                        {authUser?.name}
                     </Text>
                 </Flex>
             </Flex>

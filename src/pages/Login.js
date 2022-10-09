@@ -23,20 +23,23 @@ import { RiLoginCircleFill } from "react-icons/ri";
 import { HiOutlineMail } from "react-icons/hi";
 import { BiLock } from "react-icons/bi";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "../context/auth";
+
 
 export default function Login() {
     const toast = useToast();
+    const { fetchUser } = useAuth()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPass, setShowPass] = useState(false);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleShowPass = () => setShowPass(!showPass);
-
-
 
     const resetForm = () => {
         setEmail("");
@@ -44,9 +47,63 @@ export default function Login() {
         setLoading(false);
     };
 
+
     const clickSubmit = async () => {
-        resetForm()
-        navigate('/meeting-view')
+        let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+        if (!email || !password) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Please fill all the inputs.",
+            });
+            return;
+        } else if (!emailRegex.test(email)) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Please input a valid email address",
+            });
+            return;
+        } else if (password.length < 8) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Passwords must be at least 8 characters",
+            });
+            return;
+        } else {
+            setLoading(true)
+            signInWithEmailAndPassword(auth, email, password)
+                .then(async (userCredential) => {
+                    console.log(userCredential.user)
+                    await fetchUser(userCredential.user.uid)
+                    resetForm();
+                    toast({
+                        title: "Success",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                        description: "You've successfully logged In",
+                    });
+                    navigate("/home");
+                })
+                .catch((err) => {
+                    setLoading(false)
+                    toast({
+                        title: "Error",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                        description: err.message,
+                    });
+                });
+        }
     };
 
     return (
@@ -141,7 +198,7 @@ export default function Login() {
                             </Button>
                             <Link
                                 color={"blue.400"}
-                                onClick={() => navigate('/register')}
+                                onClick={() => navigate("/register")}
                             >
                                 {" "}
                                 Don&apos;t have an account? Register

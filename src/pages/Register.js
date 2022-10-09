@@ -22,7 +22,10 @@ import { RiLoginCircleFill } from "react-icons/ri";
 import { FiUser, FiEye, FiEyeOff } from "react-icons/fi";
 import { HiOutlineMail } from "react-icons/hi";
 import { BiLock } from "react-icons/bi";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
 
 export default function Register() {
     const toast = useToast();
@@ -32,12 +35,93 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPass, setShowPass] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleShowPass = () => setShowPass(!showPass);
 
+    const resetForm = () => {
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setLoading(false);
+    };
+
     const clickSubmit = async () => {
-        
+        let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+        if (!email || !password || !name) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Please fill all the inputs.",
+            });
+            return;
+        } else if (!emailRegex.test(email)) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Please input a valid email address",
+            });
+            return;
+        } else if (password.length < 8) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Passwords must be at least 8 characters",
+            });
+            return;
+        } else if (name.length < 3) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Name must be at least 3 characters",
+            });
+            return;
+        } else if (password !== confirmPassword) {
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                description: "Passwords dont match",
+            });
+            return;
+        } else {
+            setLoading(true);
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCred) => {
+                    const userRef = doc(db, "users", userCred.user.uid);
+                    setDoc(userRef, { name, email });
+                    resetForm();
+                    toast({
+                        title: "Success",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                        description:
+                            "Your Account has been created successfully",
+                    });
+                    navigate("/login");
+                })
+                .catch((err) => {
+                    toast({
+                        title: "Error",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                        description: err.message,
+                    });
+                    return;
+                });
+        }
     };
 
     return (
@@ -48,10 +132,11 @@ export default function Register() {
             bg={useColorModeValue("gray.50", "gray.800")}
             fontFamily={"Poppins"}
         >
-        
             <Stack spacing={8} mx={"auto"} w={"600px"}>
                 <Stack align={"center"}>
-                    <Heading fontSize={"4xl"}>Get Started with Galadriel</Heading>
+                    <Heading fontSize={"4xl"}>
+                        Get Started with Galadriel
+                    </Heading>
                     <Text fontSize={"lg"} color={"gray.600"}>
                         Create an account
                     </Text>
@@ -156,7 +241,7 @@ export default function Register() {
                                 </InputRightElement>
                             </InputGroup>
                         </FormControl>
-                        
+
                         <Button
                             bg={"blue.400"}
                             color={"white"}
