@@ -10,8 +10,23 @@ import {
     Avatar,
 } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { usePubSub } from "@videosdk.live/react-sdk";
+import { useState } from "react";
+import { formatAMPM } from "../../utils/utils";
 
 const Feed = () => {
+    const { publish, messages } = usePubSub("CHAT", {});
+
+    const [msg, setMsg] = useState("");
+
+    const publishMsg = () => {
+        const m = msg;
+        if (m.length) {
+            publish(m, { persist: true });
+            setMsg("");
+        }
+    };
+
     return (
         <>
             <Box
@@ -21,9 +36,18 @@ const Feed = () => {
                 padding={"4"}
                 overflowY={"scroll"}
             >
-                {[...Array(10)].map((_, i) => (
-                    <MessageItem key={i} />
-                ))}
+                {messages?.map((item, i) => {
+                    const { senderName, message: text, timestamp } = item;
+
+                    return (
+                        <MessageItem
+                            message={text}
+                            timestamp={timestamp}
+                            senderName={senderName}
+                            key={i}
+                        />
+                    );
+                })}
             </Box>
             <SimpleGrid
                 as="form"
@@ -41,6 +65,8 @@ const Feed = () => {
                         size="md"
                         placeholder="Type a message..."
                         required="true"
+                        value={msg}
+                        onChange={(e) => setMsg(e.target.value)}
                     />
                 </GridItem>
                 <GridItem colSpan={2}>
@@ -50,6 +76,7 @@ const Feed = () => {
                         size={"lg"}
                         isRound
                         type="submit"
+                        onClick={publishMsg}
                     />
                 </GridItem>
             </SimpleGrid>
@@ -57,15 +84,13 @@ const Feed = () => {
     );
 };
 
-const MessageItem = () => (
+const MessageItem = ({ message, timestamp, senderName }) => (
     <Box my={2}>
         <Flex alignItems={"center"}>
             <Avatar
                 size="sm"
                 mr={5}
-                src={
-                    "https://avatars.dicebear.com/api/adventurer/rileydavies.svg"
-                }
+                src={`https://avatars.dicebear.com/api/adventurer/${senderName}.svg`}
             />
             <Box
                 border="1px"
@@ -76,15 +101,14 @@ const MessageItem = () => (
                 <Box p={"2"}>
                     <Flex justify={"space-between"} align={"center"}>
                         <Text fontSize={"sm"} color={"gray.700"} my={2}>
-                            {"Riley Davies"}
+                            {senderName}
                         </Text>
-                        <Text fontSize={"10px"}>10m ago</Text>
+                        <Text fontSize={"10px"}>
+                            {formatAMPM(new Date(timestamp))}
+                        </Text>
                     </Flex>
                     <Text fontSize={"10px"} noOfLines={[1, 2, 3]}>
-                        The quick brown fox jumps over the lazy dog is an
-                        English-language pangram—a sentence that contains all of
-                        the letters of the English alphabet. Owing to its
-                        existence, Chakra was created.
+                        {message}
                     </Text>
                 </Box>
             </Box>

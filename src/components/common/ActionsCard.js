@@ -6,11 +6,22 @@ import {
     Icon,
     Button,
 } from "@chakra-ui/react";
-import { BsFillMicFill, BsRecordCircle } from "react-icons/bs";
-import { FcVideoCall } from "react-icons/fc";
-import {MdIosShare} from "react-icons/md"
+import {
+    BsFillMicFill,
+    BsRecordCircle,
+    BsFillMicMuteFill,
+    BsCameraVideoFill,
+    BsCameraVideoOffFill,
+} from "react-icons/bs";
+import { MdIosShare } from "react-icons/md";
 
-const ActionsCard = () => (
+const ActionsCard = ({
+    onToggleMute,
+    onToggleWebcam,
+    onToggleScreenShare,
+    micOn,
+    webcamOn,
+}) => (
     <Flex
         bg={useColorModeValue("#F9FAFB", "gray.600")}
         w="full"
@@ -32,16 +43,50 @@ const ActionsCard = () => (
             align={"center"}
             justify={"space-evenly"}
         >
-            <ActionItem IconName={BsFillMicFill} text={"Mute"} />
-            <ActionItem IconName={FcVideoCall} text={"Video"} />
-            <ActionItem IconName={MdIosShare} text={"Share Screen"} />
+            {micOn ? (
+                <ActionItem
+                    IconName={BsFillMicFill}
+                    text={"Mute"}
+                    onClick={onToggleMute}
+                />
+            ) : (
+                <ActionItem
+                    IconName={BsFillMicMuteFill}
+                    text={"UnMute"}
+                    onClick={onToggleMute}
+                />
+            )}
+            {webcamOn ? (
+                <ActionItem
+                    IconName={BsCameraVideoFill}
+                    text={"Turn Off Webcam"}
+                    onClick={onToggleWebcam}
+                />
+            ) : (
+                <ActionItem
+                    IconName={BsCameraVideoOffFill}
+                    text={"Turn On Webcam"}
+                    onClick={onToggleWebcam}
+                />
+            )}
+            <ActionItem
+                IconName={MdIosShare}
+                text={"Share Screen"}
+                onClick={onToggleScreenShare}
+            />
             <ActionItem IconName={BsRecordCircle} text={"Record"} />
         </Flex>
     </Flex>
 );
 
-const ActionItem = ({ IconName, text }) => (
-    <VStack spacing={2} mx={4} as={Button} variant={"ghost"}>
+const ActionItem = ({ IconName, text, onClick }) => (
+    <VStack
+        spacing={2}
+        mx={4}
+        as={Button}
+        variant={"ghost"}
+        onClick={onClick ? onClick : () => {}}
+    >
         <Icon as={IconName} mt={4} />
         <Text fontSize={"sm"}>{text}</Text>
     </VStack>

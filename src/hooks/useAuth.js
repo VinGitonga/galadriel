@@ -15,19 +15,12 @@ export function useAuth() {
             return;
         }
 
-        const userRef = doc(db, "users", authState.uid);
-        const userSnap = await getDoc(userRef);
-        setAuthUser({ id: userSnap.id, ...userSnap.data });
-        sessionStorage.setItem(
-            "userData",
-            JSON.stringify({ id: userSnap.id, ...userSnap.data })
-        );
+        await fetchUser(authState.uid)
     };
 
     const fetchUser =async (userId) => {
         const userRef = doc(db, "users", userId);
         const userSnap = await getDoc(userRef);
-        console.log(userSnap.data())
         setAuthUser({ id: userSnap.id, ...userSnap.data() });
         sessionStorage.setItem(
             "userData",

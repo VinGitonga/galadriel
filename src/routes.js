@@ -2,8 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
-import MeetingView from "./pages/MeetingView";
 import Register from "./pages/Register";
+import JoinMeeting from "./pages/JoinMeeting";
+import Meeting from "./pages/Meeting";
 
 export const router = createBrowserRouter([
     {
@@ -20,10 +21,14 @@ export const router = createBrowserRouter([
     },
     {
         path: "/meeting-view",
-        element: <MeetingView />,
+        element: <Meeting />,
     },
     {
         path: "/home",
         element: <Home />,
+    },
+    {
+        path: "/join-meeting",
+        element: <JoinMeeting />,
     },
 ]);

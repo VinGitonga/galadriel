@@ -6,9 +6,11 @@ import HomeIconCard from "../components/common/HomeIconCard";
 import { MdAddBox } from "react-icons/md";
 import { BiBookAdd } from "react-icons/bi";
 import { CgNotes } from "react-icons/cg";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
     const [now, setNow] = useState(DateTime.local());
+    const navigate = useNavigate();
 
     setInterval(() => setNow(DateTime.local()), 60000);
 
@@ -31,8 +33,12 @@ const Home = () => {
                 </Text>
                 <HStack my={8} spacing={"20"}>
                     <HomeIconCard bgColor="orange.300" text={"New Meeting"} />
-                    <HomeIconCard IconName={MdAddBox} text={"Join"} />
-                    <HomeIconCard IconName={BiBookAdd} text={"Resources"}  />
+                    <HomeIconCard
+                        IconName={MdAddBox}
+                        text={"Join"}
+                        onClick={() => navigate("/join-meeting")}
+                    />
+                    <HomeIconCard IconName={BiBookAdd} text={"Resources"} />
                     <HomeIconCard IconName={CgNotes} text={"Assignments"} />
                 </HStack>
             </Box>
