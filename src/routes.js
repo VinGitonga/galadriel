@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import JoinMeeting from "./pages/JoinMeeting";
 import Meeting from "./pages/Meeting";
+import NewMeeting from "./pages/NewMeeting";
 
 export const router = createBrowserRouter([
     {
@@ -30,5 +31,9 @@ export const router = createBrowserRouter([
     {
         path: "/join-meeting",
         element: <JoinMeeting />,
+    },
+    {
+        path: "/new-meeting",
+        element: <NewMeeting />,
     },
 ]);

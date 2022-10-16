@@ -32,14 +32,18 @@ const Home = () => {
                     {getToday()}
                 </Text>
                 <HStack my={8} spacing={"20"}>
-                    <HomeIconCard bgColor="orange.300" text={"New Meeting"} />
+                    <HomeIconCard
+                        bgColor="orange.300"
+                        text={"New Meeting"}
+                        onClick={() => navigate("/new-meeting")}
+                    />
                     <HomeIconCard
                         IconName={MdAddBox}
-                        text={"Join"}
+                        text={"Join Meeting"}
                         onClick={() => navigate("/join-meeting")}
                     />
-                    <HomeIconCard IconName={BiBookAdd} text={"Resources"} />
-                    <HomeIconCard IconName={CgNotes} text={"Assignments"} />
+                    <HomeIconCard IconName={CgNotes} text={"My Rooms"} />
+                    <HomeIconCard IconName={BiBookAdd} text={"All Resources"} />
                 </HStack>
             </Box>
         </>
