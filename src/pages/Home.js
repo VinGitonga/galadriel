@@ -3,13 +3,17 @@ import Navbar from "../components/Navbar";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import HomeIconCard from "../components/common/HomeIconCard";
-import { MdAddBox } from "react-icons/md";
-import { BiBookAdd } from "react-icons/bi";
-import { CgNotes } from "react-icons/cg";
+import { MdAddBox, MdOutlineMeetingRoom } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { FiEdit3 } from "react-icons/fi";
+import { TbArrowsJoin } from "react-icons/tb";
+import NewRoom from "../components/rooms/NewRoom";
+import JoinRoom from "../components/rooms/JoinRoom";
 
 const Home = () => {
     const [now, setNow] = useState(DateTime.local());
+    const [showModal, setShowModal] = useState(false);
+    const [showJoinModal, setShowJoinModal] = useState(false);
     const navigate = useNavigate();
 
     setInterval(() => setNow(DateTime.local()), 60000);
@@ -26,6 +30,8 @@ const Home = () => {
     return (
         <>
             <Navbar />
+            <NewRoom open={showModal} setOpen={setShowModal} />
+            <JoinRoom open={showJoinModal} setOpen={setShowJoinModal} />
             <Box style={{ paddingLeft: "200px" }} py={4} fontFamily={"Poppins"}>
                 <Text fontSize={"6xl"}>{getCurrentTime()}</Text>
                 <Text fontSize={"lg"} mt={5}>
@@ -33,17 +39,25 @@ const Home = () => {
                 </Text>
                 <HStack my={8} spacing={"20"}>
                     <HomeIconCard
-                        bgColor="orange.300"
-                        text={"New Meeting"}
-                        onClick={() => navigate("/new-meeting")}
-                    />
-                    <HomeIconCard
                         IconName={MdAddBox}
                         text={"Join Meeting"}
                         onClick={() => navigate("/join-meeting")}
                     />
-                    <HomeIconCard IconName={CgNotes} text={"My Rooms"} />
-                    <HomeIconCard IconName={BiBookAdd} text={"All Resources"} />
+                    <HomeIconCard
+                        IconName={FiEdit3}
+                        text={"Create New Room"}
+                        onClick={() => setShowModal(true)}
+                    />
+                    <HomeIconCard
+                        IconName={TbArrowsJoin}
+                        text={"Join Room"}
+                        onClick={() => setShowJoinModal(true)}
+                    />
+                    <HomeIconCard
+                        IconName={MdOutlineMeetingRoom}
+                        text={"My Rooms"}
+                        onClick={() => navigate("/my-rooms")}
+                    />
                 </HStack>
             </Box>
         </>
