@@ -7,7 +7,14 @@ import { MdAddBox, MdCloudDownload } from "react-icons/md";
 import { BiBookAdd } from "react-icons/bi";
 import { useNavigate, useParams } from "react-router-dom";
 import ResourceItem from "../components/rooms/ResourceItem";
-import { doc, getDoc } from "firebase/firestore";
+import {
+    doc,
+    getDoc,
+    query,
+    where,
+    collection,
+    onSnapshot,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import UploadResource from "../components/rooms/UploadResource";
 
@@ -15,6 +22,7 @@ const Room = () => {
     const [now, setNow] = useState(DateTime.local());
     const [roomDetails, setRoomDetails] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [resources, setResources] = useState([]);
     const navigate = useNavigate();
     const params = useParams();
 
@@ -38,6 +46,24 @@ const Room = () => {
     useEffect(() => {
         getRoomDetails();
     }, [params]);
+
+    useEffect(
+        () =>
+            onSnapshot(
+                query(
+                    collection(db, "resources"),
+                    where("roomId", "==", params?.roomId)
+                ),
+                (snapshot) =>
+                    setResources(
+                        snapshot.docs.map((item) => ({
+                            id: item.id,
+                            ...item.data(),
+                        }))
+                    )
+            ),
+        [params, db]
+    );
 
     return (
         <>
@@ -85,9 +111,13 @@ const Room = () => {
                     Resources
                 </Text>
                 <Flex align={"center"} flexWrap={"wrap"}>
-                    {[...Array(8)].map((_, i) => (
-                        <ResourceItem key={i} />
-                    ))}
+                    {resources.length > 0 ? (
+                        resources.map((item) => (
+                            <ResourceItem key={item.id} item={item} />
+                        ))
+                    ) : (
+                        <Text>No new resources added 😒</Text>
+                    )}
                 </Flex>
             </Box>
         </>

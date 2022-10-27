@@ -28,7 +28,7 @@ import { nanoid } from "nanoid";
 import Navbar from "../components/Navbar";
 import MeetingCreatedDetails from "../components/meeting/MeetingCreatedDetails";
 import { DateTime } from "luxon";
-
+import { createMeeting } from "../api";
 function formatDate(dateString = "2012") {
     let dateObj = new Date(dateString);
     let dateISO = dateObj.toISOString();
@@ -72,7 +72,7 @@ export default function NewMeeting() {
             Room-Title: ${content?.roomTitle}\n \
             Duration: ${content?.duration} minutes\n \
         `;
-        setCopyText(textContent)
+        setCopyText(textContent);
         setMeetingDetails(content);
         setLoading(false);
         setShowModal(true);

@@ -17,8 +17,14 @@ import {
 import { FileIcon, defaultStyles } from "react-file-icon";
 import { MdOutlineMoreVert, MdCloudDownload } from "react-icons/md";
 import { BsFillFileEarmarkFill } from "react-icons/bs";
+import { saveAs } from "file-saver";
 
-export default function ResourceItem() {
+const getFileExtension = (filename = "Screenshot.png", toUpper = false) =>
+    toUpper
+        ? filename.split(".").pop().toUpperCase()
+        : filename.split(".").pop();
+
+export default function ResourceItem({ item }) {
     return (
         <VStack spacing={2} mr={4} mt={4}>
             <Box
@@ -32,8 +38,8 @@ export default function ResourceItem() {
                 <SimpleGrid w={"full"} columns={12}>
                     <GridItem colSpan={9}>
                         <FileIcon
-                            extension={"png"}
-                            {...defaultStyles["png"]}
+                            extension={getFileExtension(item?.filename)}
+                            {...defaultStyles[getFileExtension(item?.filename)]}
                             labelUppercase={true}
                         />
                     </GridItem>
@@ -47,7 +53,15 @@ export default function ResourceItem() {
                                 isRound
                             />
                             <MenuList>
-                                <MenuItem icon={<MdCloudDownload />}>
+                                <MenuItem
+                                    icon={<MdCloudDownload />}
+                                    onClick={() =>
+                                        saveAs(
+                                            item?.downloadUrl,
+                                            item?.filename
+                                        )
+                                    }
+                                >
                                     Download
                                 </MenuItem>
                             </MenuList>
@@ -64,13 +78,13 @@ export default function ResourceItem() {
                     mr={2}
                 />
                 <VStack spacing={2}>
-                    <Text fontSize={"lg"}>Screenshot.png</Text>
+                    <Text fontSize={"lg"}>{item?.filename}</Text>
                     <Box>
                         <chakra.span fontStyle={"italic"}>
                             Added By:
                         </chakra.span>
                         <Text fontSize={"sm"} color={"gray.400"}>
-                            Chris Bryat
+                            {item?.addedByName}
                         </Text>
                     </Box>
                 </VStack>
