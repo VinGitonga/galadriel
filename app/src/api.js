@@ -1,44 +1,31 @@
 import axios from "axios";
-const VIDEOSDK_TOKEN = process.env.REACT_APP_VIDEOSDK_TOKEN;
+// const VIDEOSDK_TOKEN = process.env.REACT_APP_VIDEOSDK_TOKEN;
 
-export const getToken = () => VIDEOSDK_TOKEN;
+export const getToken = async () => {
+    const resp = await axios.get(
+        "https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu72.gitpod.io/get-token"
+    );
+    let token = resp.data;
+    return token;
+};
+
+// export const getToken = () => process.env.REACT_APP_VIDEOSDK_TOKEN;
 
 export const createMeeting = async ({ token }) => {
-    const config = {
-        headers: {
-            authorization: `${token}`,
-            "Content-Type": "application/json",
-        },
-    };
+    const data = { token };
 
-    let data = {
-        region: "sg001",
-        userMeetingId: "unicorn",
-    };
-
-    let resp = await axios.post(
-        "https://api.videosdk.live/v1/meetings",
-        JSON.stringify(data),
-        config
+    const resp = await axios.post(
+        "https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu72.gitpod.io/create-meeting",
+        data
     );
-
-    console.log(resp.data);
-
-    // return res.status(200).json(resp.data);
 
     return resp.data;
 };
 
 export const validateMeeting = async ({ meetingId, token }) => {
-    let config = {
-        method: "POST",
-        url: `https://api.videosdk.live/v1/meetings/${meetingId}`,
-        headers: {
-            authorization: `${token}`
-        }
-    }
+    let resp = await axios.get(
+        `https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu72.gitpod.io/validate-meeting/${token}/${meetingId}`
+    );
 
-    let resp = await axios(config)
-    console.log(resp.data)
-    return resp.data ? resp.data.meetingId === meetingId : false;
+    return resp.data ? resp.data?.isValidated : false;
 };

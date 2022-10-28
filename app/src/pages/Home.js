@@ -1,5 +1,4 @@
 import { Box, Text, HStack } from "@chakra-ui/react";
-import Navbar from "../components/Navbar";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import HomeIconCard from "../components/common/HomeIconCard";
@@ -29,7 +28,6 @@ const Home = () => {
 
     return (
         <>
-            <Navbar />
             <NewRoom open={showModal} setOpen={setShowModal} />
             <JoinRoom open={showJoinModal} setOpen={setShowJoinModal} />
             <Box style={{ paddingLeft: "200px" }} py={4} fontFamily={"Poppins"}>

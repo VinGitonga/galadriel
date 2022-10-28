@@ -17,18 +17,22 @@ import {
     Tooltip,
     useColorModeValue,
     InputRightElement,
+    useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdTitle } from "react-icons/md";
 import { BiUser, BiLock } from "react-icons/bi";
 import { BsCalendar2Event } from "react-icons/bs";
 import { RiTimerFlashFill } from "react-icons/ri";
 import { FiEdit3 } from "react-icons/fi";
 import { nanoid } from "nanoid";
-import Navbar from "../components/Navbar";
 import MeetingCreatedDetails from "../components/meeting/MeetingCreatedDetails";
 import { DateTime } from "luxon";
-import { createMeeting } from "../api";
+import { createMeeting, getToken } from "../api";
+import { addDoc, collection, getDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useParams } from "react-router-dom";
+
 function formatDate(dateString = "2012") {
     let dateObj = new Date(dateString);
     let dateISO = dateObj.toISOString();
@@ -39,43 +43,92 @@ function formatDate(dateString = "2012") {
 }
 
 export default function NewMeeting() {
+    const params = useParams();
     const [meetingTitle, setMeetingTitle] = useState("");
     const [meetingId, setMeetingId] = useState(null);
     const [meetingPasscode, setMeetingPasscode] = useState("");
     const [hostName, setHostName] = useState("");
     const [scheduledFor, setScheduledFor] = useState("");
-    const [roomId, setRoomId] = useState("");
     const [meetingDuration, setMeetingDuration] = useState(30);
     const [showDurationTooltip, setShowDurationTooltip] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [meetingDetails, setMeetingDetails] = useState(null);
     const [copyText, setCopyText] = useState("");
+    const [roomDetails, setRoomDetails] = useState(null);
+    const toast = useToast();
 
-    const clickSubmit = () => {
-        setLoading(true);
-        let content = {
-            meetingTitle,
-            meetingHost: hostName,
-            meetingId: "kjui-5412-ytrf",
-            meetingPasscode,
-            scheduledFor,
-            roomTitle: "Blockchain and Web3",
-            duration: meetingDuration,
-        };
-        let textContent = `
-            Meeting-Title: ${content?.meetingTitle}\n \
-            Host: ${content?.meetingHost}\n \
-            Meeting ID: ${content?.meetingId}\n \
-            Meeting-Passcode: ${content?.meetingPasscode}\n \
-            Scheduled-For: ${formatDate(content?.scheduledFor)}\n \
-            Room-Title: ${content?.roomTitle}\n \
-            Duration: ${content?.duration} minutes\n \
-        `;
-        setCopyText(textContent);
-        setMeetingDetails(content);
-        setLoading(false);
-        setShowModal(true);
+    const customToast = ({ title, status }) => {
+        return toast({
+            title: title,
+            status: status,
+            isClosable: true,
+            duration: 6000,
+        });
+    };
+
+    const clickSubmit = async () => {
+        if (!meetingTitle || !hostName || !scheduledFor || !meetingPasscode) {
+            customToast({
+                title: "Please fill all the fields",
+                status: "success",
+            });
+            return;
+        } else {
+            setLoading(true);
+
+            // create meeting
+            const token = await getToken();
+            const { roomId } = await createMeeting({ token });
+            setMeetingId(roomId);
+
+            let content = {
+                meetingTitle,
+                meetingHost: hostName,
+                meetingId: roomId,
+                meetingPasscode,
+                scheduledFor,
+                roomTitle: roomDetails?.roomTitle,
+                duration: meetingDuration,
+                meetingRoomId: params?.roomId,
+            };
+
+            let textContent = `
+                Meeting-Title: ${content?.meetingTitle}\n \
+                Host: ${content?.meetingHost}\n \
+                Meeting ID: ${meetingId}\n \
+                Meeting-Passcode: ${content?.meetingPasscode}\n \
+                Scheduled-For: ${formatDate(content?.scheduledFor)}\n \
+                Room-Title: ${content?.roomTitle}\n \
+                Duration: ${content?.duration} minutes\n \
+            `;
+
+            // save to firebase
+            await addDoc(collection(db, "meetings"), content)
+                .then(() => {
+                    customToast({
+                        title: "Meeting Scheduled and saved successfully",
+                        status: "success",
+                    });
+                    setCopyText(textContent);
+                    setMeetingDetails(content);
+                    setLoading(false);
+                    setShowModal(true);
+                })
+                .catch(() => {
+                    customToast({
+                        title: "Something went wrong when creating meeting",
+                        status: "error",
+                    });
+                    setLoading(false);
+                });
+        }
+    };
+
+    const getRoomDetails = async () => {
+        const roomRef = doc(db, "rooms", params?.roomId);
+        const roomSnap = await getDoc(roomRef);
+        setRoomDetails({ id: roomSnap.id, ...roomSnap.data() });
     };
 
     const generatePasscode = () => {
@@ -83,9 +136,12 @@ export default function NewMeeting() {
         setMeetingPasscode(passcode);
     };
 
+    useEffect(() => {
+        getRoomDetails();
+    }, [params]);
+
     return (
         <>
-            <Navbar />
             <MeetingCreatedDetails
                 content={meetingDetails}
                 open={showModal}
@@ -241,6 +297,7 @@ export default function NewMeeting() {
                                 _hover={{
                                     bg: "blue.500",
                                 }}
+                                disabled={loading}
                             >
                                 Submit
                             </Button>

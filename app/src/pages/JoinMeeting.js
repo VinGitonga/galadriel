@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import {
     Flex,
     Stack,
@@ -82,7 +81,6 @@ export default function JoinMeeting() {
 
     return (
         <>
-            <Navbar />
             {readyToJoin ? (
                 <MeetingSetup
                     name={name}

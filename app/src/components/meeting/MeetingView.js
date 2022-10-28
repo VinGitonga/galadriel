@@ -11,6 +11,10 @@ import {
     Tooltip,
     IconButton,
     useToast,
+    Flex,
+    Heading,
+    Text,
+    Button,
 } from "@chakra-ui/react";
 import Chats from "../chats";
 import { ImPhoneHangUp } from "react-icons/im";
@@ -20,31 +24,42 @@ import MeetingParticipant from "../participants";
 import ActionsCard from "../common/ActionsCard";
 import ParticipantsView from "./ParticipantsView";
 import { useMeeting, useParticipant } from "@videosdk.live/react-sdk";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Screenshare from "./Screenshare";
 import { chunk } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
+import { BiLogOutCircle } from "react-icons/bi";
+import { query, collection, where, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
 
-const MeetingView = () => {
+const MeetingView = ({ meetingId }) => {
     const screenShareRef = useRef(null);
-    const navigate = useNavigate()
-    const toast = useToast()
+    const navigate = useNavigate();
+    const toast = useToast();
+    const [meetingDetails, setMeetingDetails] = useState(null);
+
+    /**
+     * Custom toast with prefed fields
+     */
+    const customToast = ({ text, status = "info" }) => {
+        return toast({
+            title: text,
+            status: status,
+            isClosable: true,
+            duration: 6000,
+        });
+    };
 
     function onMeetingLeave() {
-        toast({
-            title:"You have left a meeting",
-            status: "info",
-            isClosable: true,
-            duration: 5000
-        })
-        navigate('/home')
+        customToast({ title: "You have left the meeting" });
+        navigate("/home");
     }
 
     function onParticipantJoined(participant) {
         console.log(" onParticipantJoined", participant);
     }
     function onParticipantLeft(participant) {
-        console.log(" onParticipantLeft", participant);
+        customToast({ text: `${participant?.name} has left the meeting` });
     }
     const onSpeakerChanged = (activeSpeakerId) => {
         console.log(" onSpeakerChanged", activeSpeakerId);
@@ -62,16 +77,16 @@ const MeetingView = () => {
         console.log(" onEntryResponded", participantId, name);
     }
     function onRecordingStarted() {
-        console.log(" onRecordingStarted");
+        customToast({ text: "Meeting Recording has started" });
     }
     function onRecordingStopped() {
-        console.log(" onRecordingStopped");
+        customToast({ text: "Meeting Recording has stopped" });
     }
     function onChatMessage(data) {
         console.log(" onChatMessage", data);
     }
     function onMeetingJoined() {
-        console.log("onMeetingJoined");
+        customToast({ text: "Welcome to the Meeting" });
     }
     function onMeetingLeft() {
         console.log("onMeetingLeft");
@@ -107,7 +122,6 @@ const MeetingView = () => {
     };
 
     const {
-        meetingId,
         meeting,
         localParticipant,
         mainParticipant,
@@ -155,9 +169,6 @@ const MeetingView = () => {
         onConnectionOpen,
     });
 
-    
-    
-
     const { screenShareStream, screenShareOn } = useParticipant(presenterId);
 
     const screenShareMediaStream = useMemo(() => {
@@ -168,10 +179,42 @@ const MeetingView = () => {
         }
     }, [screenShareStream, screenShareOn]);
 
+    const getMeetingDetails = async () => {
+        const meetsRef = collection(db, "meetings");
+        const q = query(meetsRef, where("meetingId", "==", meetingId));
+        const querySnap = await getDocs(q);
+        const meets = [];
+        querySnap.forEach((item) => {
+            meets.push({ id: item.id, ...item.data() });
+        });
+
+        setMeetingDetails(meets[0]);
+    };
+
+    useEffect(() => getMeetingDetails(), [meetingId]);
+
     return (
         <>
             <Navbar />
             <Box px={4} py={4} mx="auto" fontFamily={"Poppins"}>
+                <Flex align={"center"} justify={"space-between"}>
+                    <Heading as={"h2"} size={"xl"}>
+                        {meetingDetails?.meetingTitle || "Test Meet"}
+                    </Heading>
+                    <Box>
+                        <Text mr={2}>{meetingId}</Text>
+                        <Button
+                            variant={"solid"}
+                            colorScheme={"red"}
+                            size={"sm"}
+                            mr={4}
+                            leftIcon={<BiLogOutCircle />}
+                            onClick={end}
+                        >
+                            End Meeting
+                        </Button>
+                    </Box>
+                </Flex>
                 <SimpleGrid
                     w={{ base: "full", xl: 11 / 12 }}
                     columns={{ base: 1, lg: 11 }}

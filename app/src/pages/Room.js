@@ -1,5 +1,16 @@
-import { Box, Text, HStack, Flex } from "@chakra-ui/react";
-import Navbar from "../components/Navbar";
+import {
+    Box,
+    Text,
+    HStack,
+    Flex,
+    TableContainer,
+    Table,
+    Thead,
+    Tr,
+    Tbody,
+    Td,
+    Th,
+} from "@chakra-ui/react";
 import { DateTime } from "luxon";
 import { useState, useEffect } from "react";
 import HomeIconCard from "../components/common/HomeIconCard";
@@ -23,6 +34,7 @@ const Room = () => {
     const [roomDetails, setRoomDetails] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [resources, setResources] = useState([]);
+    const [meets, setMeets] = useState([]);
     const navigate = useNavigate();
     const params = useParams();
 
@@ -43,9 +55,43 @@ const Room = () => {
         return now.setLocale("en-US").toLocaleString(f);
     };
 
+    const getDateFromSchedule = (dateStr) => {
+        let f = { month: "long", day: "numeric", weekday: "long" };
+        let newDateStr;
+        if (dateStr) {
+            newDateStr = DateTime.fromISO(dateStr, { zone: "Africa/Nairobi" })
+                .setLocale("en-US")
+                .toLocaleString(f);
+        } else {
+            let dt = Date.now().toLocaleString();
+            newDateStr = DateTime.fromISO(dt, { zone: "Africa/Nairobi" })
+                .setLocale("en-US")
+                .toLocaleString(f);
+        }
+        return newDateStr;
+    };
+
     useEffect(() => {
         getRoomDetails();
     }, [params]);
+
+    useEffect(
+        () =>
+            onSnapshot(
+                query(
+                    collection(db, "meetings"),
+                    where("meetingRoomId", "==", params?.roomId)
+                ),
+                (snapshot) =>
+                    setMeets(
+                        snapshot.docs.map((item) => ({
+                            id: item.id,
+                            ...item.data(),
+                        }))
+                    )
+            ),
+        [params, db]
+    );
 
     useEffect(
         () =>
@@ -67,7 +113,6 @@ const Room = () => {
 
     return (
         <>
-            <Navbar />
             <UploadResource
                 open={showModal}
                 setOpen={setShowModal}
@@ -79,7 +124,7 @@ const Room = () => {
                         {roomDetails?.roomTitle || "Room"} :
                     </Text>
                     <Text ml={"5"} fontSize={"lg"}>
-                        {roomDetails?.joinCode}
+                        Room Join Code {"->"} {roomDetails?.joinCode}
                     </Text>
                 </Flex>
                 <Text fontSize={"6xl"}>{getCurrentTime()}</Text>
@@ -90,7 +135,9 @@ const Room = () => {
                     <HomeIconCard
                         bgColor="orange.300"
                         text={"New Meeting"}
-                        onClick={() => navigate("/new-meeting")}
+                        onClick={() =>
+                            navigate(`/new-meeting/${roomDetails?.id}`)
+                        }
                     />
                     <HomeIconCard
                         IconName={MdAddBox}
@@ -119,6 +166,43 @@ const Room = () => {
                         <Text>No new resources added 😒</Text>
                     )}
                 </Flex>
+                <Text fontSize={"4xl"} my={"2"}>
+                    Meetings
+                </Text>
+                {meets.length > 0 ? (
+                    <TableContainer>
+                        <Table variant="simple">
+                            <Thead>
+                                <Tr>
+                                    <Th>Title</Th>
+                                    <Th>Host</Th>
+                                    <Th>Meeting ID</Th>
+                                    <Th>Scheduled For</Th>
+                                    <Th>Duration</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {meets.map((meet) => (
+                                    <Tr key={meet?.id}>
+                                        <Td>{meet?.meetingTitle}</Td>
+                                        <Td>{meet?.meetingHost}</Td>
+                                        <Td>{meet?.meetingId}</Td>
+                                        <Td>
+                                            {getDateFromSchedule(
+                                                meet?.scheduledFor
+                                            )}
+                                        </Td>
+                                        <Td>
+                                            {meet?.duration} {" Minutes"}
+                                        </Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+                ) : (
+                    <Text>No new meetings</Text>
+                )}
             </Box>
         </>
     );

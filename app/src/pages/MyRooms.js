@@ -1,5 +1,4 @@
 import { Box, Text, Flex } from "@chakra-ui/react";
-import Navbar from "../components/Navbar";
 import { DateTime } from "luxon";
 import { useState, useEffect } from "react";
 import HomeIconCard from "../components/common/HomeIconCard";
@@ -46,7 +45,6 @@ const MyRooms = () => {
 
     return (
         <>
-            <Navbar />
             <Box style={{ paddingLeft: "200px" }} py={4} fontFamily={"Poppins"}>
                 <Text fontSize={"6xl"}>{"My Rooms"}</Text>
                 <Text fontSize={"6xl"}>{getCurrentTime()}</Text>
