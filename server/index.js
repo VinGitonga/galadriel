@@ -21,6 +21,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.listen(5000, () => {
+    console.log(`Server listening at port 5000`);
+});
+
 app.get("/", (req, res) => {
     res.send("Hey this is my API running 🥳");
 });
@@ -89,9 +93,7 @@ app.get("/validate-meeting/:token/:roomId", async (req, res) => {
     res.status(200).json({ isValidated });
 });
 
-app.listen(5000, () => {
-    console.log(`Server listening at port 5000`);
-});
+
 
 
 export default app
