@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { query, where, collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/auth";
+import { Helmet } from "react-helmet";
 
 const MyRooms = () => {
     const [now, setNow] = useState(DateTime.local());
@@ -45,6 +46,9 @@ const MyRooms = () => {
 
     return (
         <>
+            <Helmet>
+                <title>TheRoom | My Rooms</title>
+            </Helmet>
             <Box style={{ paddingLeft: "200px" }} py={4} fontFamily={"Poppins"}>
                 <Text fontSize={"6xl"}>{"My Rooms"}</Text>
                 <Text fontSize={"6xl"}>{getCurrentTime()}</Text>

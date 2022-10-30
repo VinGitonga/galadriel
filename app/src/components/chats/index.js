@@ -19,13 +19,16 @@ const Feed = () => {
 
     const [msg, setMsg] = useState("");
 
-    const publishMsg = () => {
+    const publishMsg = (e) => {
+        e.preventDefault()
         const m = msg;
         if (m.length) {
             publish(m, { persist: true });
             setMsg("");
         }
     };
+
+    console.log(messages)
 
     return (
         <>
@@ -64,7 +67,6 @@ const Feed = () => {
                         mt={0}
                         size="md"
                         placeholder="Type a message..."
-                        required="true"
                         value={msg}
                         onChange={(e) => setMsg(e.target.value)}
                     />
@@ -76,7 +78,7 @@ const Feed = () => {
                         size={"lg"}
                         isRound
                         type="submit"
-                        onClick={publishMsg}
+                        onClick={e => publishMsg(e)}
                     />
                 </GridItem>
             </SimpleGrid>

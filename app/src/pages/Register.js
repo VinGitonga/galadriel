@@ -26,6 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
+import {Helmet} from "react-helmet"
 
 export default function Register() {
     const toast = useToast();
@@ -132,6 +133,9 @@ export default function Register() {
             bg={useColorModeValue("gray.50", "gray.800")}
             fontFamily={"Poppins"}
         >
+            <Helmet>
+                <title>TheRoom | Register</title>
+            </Helmet>
             <Stack spacing={8} mx={"auto"} w={"600px"}>
                 <Stack align={"center"}>
                     <Heading fontSize={"4xl"}>

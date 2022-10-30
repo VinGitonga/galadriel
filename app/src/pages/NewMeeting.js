@@ -31,7 +31,8 @@ import { DateTime } from "luxon";
 import { createMeeting, getToken } from "../api";
 import { addDoc, collection, getDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 function formatDate(dateString = "2012") {
     let dateObj = new Date(dateString);
@@ -57,6 +58,7 @@ export default function NewMeeting() {
     const [copyText, setCopyText] = useState("");
     const [roomDetails, setRoomDetails] = useState(null);
     const toast = useToast();
+    const navigate = useNavigate();
 
     const customToast = ({ title, status }) => {
         return toast({
@@ -96,7 +98,7 @@ export default function NewMeeting() {
             let textContent = `
                 Meeting-Title: ${content?.meetingTitle}\n \
                 Host: ${content?.meetingHost}\n \
-                Meeting ID: ${meetingId}\n \
+                Meeting ID: ${roomId}\n \
                 Meeting-Passcode: ${content?.meetingPasscode}\n \
                 Scheduled-For: ${formatDate(content?.scheduledFor)}\n \
                 Room-Title: ${content?.roomTitle}\n \
@@ -114,6 +116,7 @@ export default function NewMeeting() {
                     setMeetingDetails(content);
                     setLoading(false);
                     setShowModal(true);
+                    navigate(`/room/${params?.roomId}`);
                 })
                 .catch(() => {
                     customToast({
@@ -142,6 +145,9 @@ export default function NewMeeting() {
 
     return (
         <>
+            <Helmet>
+                <title>TheRoom | Schedule Meeting</title>
+            </Helmet>
             <MeetingCreatedDetails
                 content={meetingDetails}
                 open={showModal}

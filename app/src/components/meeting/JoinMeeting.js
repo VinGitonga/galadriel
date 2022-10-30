@@ -28,24 +28,32 @@ import {
 } from "react-icons/bs";
 import { BiUser } from "react-icons/bi";
 import Webcam from "react-webcam";
-import { useNavigate } from "react-router-dom";
-import { getToken, validateMeeting } from "../api";
+import { getToken, validateMeeting } from "../../api";
 
-export default function JoinMeeting() {
-    const [meetingId, setMeetingId] = useState("");
+const meetToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI4ZTI4NWFhZi03ZmMyLTQ1NTktOTAzYy1kYzBmNjFjOGRjMmUiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTY2Njc5NTk3MCwiZXhwIjoxNjY3NDAwNzcwfQ.e6RDIqtwM10gSnBC8OK4GtHJ1MtD-9ZArBDQF9KiMgA"
+
+export default function JoinMeeting({
+    meetingId,
+    setMeetingId,
+    webcamOn,
+    setWebcamOn,
+    participantName,
+    setParticipantName,
+    setToken,
+    onClickStart,
+    micOn,
+    setMicOn
+}) {
     const [readyToJoin, setReadyToJoin] = useState(false);
     const videoPlayerRef = useRef(null);
-    const [webcamOn, setWebcamOn] = useState(false);
-    const [micOn, setMicOn] = useState(false);
-    const [name, setName] = useState("");
-    const navigate = useNavigate();
     const toast = useToast();
-
+    
     const toggleWebcam = () => setWebcamOn(!webcamOn);
     const toggleMic = () => setMicOn(!micOn);
 
     const onClickJoin = async () => {
-        let token = getToken();
+        let token = await getToken();
+        setToken(token)
         let valid = await validateMeeting({
             meetingId: meetingId,
             token,
@@ -66,25 +74,14 @@ export default function JoinMeeting() {
         }
     };
 
-    const onClickStart = () => {
-        let state = {
-            participantName: name,
-            meetingId: meetingId,
-            micOn: micOn,
-            webcamOn: micOn,
-        };
-
-        navigate("/meeting-view", {
-            state: state,
-        });
-    };
+    
 
     return (
         <>
             {readyToJoin ? (
                 <MeetingSetup
-                    name={name}
-                    setName={setName}
+                    name={participantName}
+                    setName={setParticipantName}
                     videoPlayerRef={videoPlayerRef}
                     webcamOn={webcamOn}
                     micOn={micOn}

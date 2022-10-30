@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../context/auth";
-
+import {Helmet} from "react-helmet"
 
 export default function Login() {
     const toast = useToast();
@@ -114,6 +114,9 @@ export default function Login() {
             bg={useColorModeValue("gray.50", "gray.800")}
             fontFamily={"Poppins"}
         >
+            <Helmet>
+            <title>TheRoom | Login</title>
+        </Helmet>
             <Stack spacing={8} mx={"auto"} w={"450px"}>
                 <Stack align={"center"}>
                     <Heading fontSize={"4xl"}>Welcome Back</Heading>

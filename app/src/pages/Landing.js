@@ -4,15 +4,24 @@ import {
     chakra,
     Stack,
     useColorModeValue,
-} from '@chakra-ui/react'
-import { useNavigate } from 'react-router-dom';
-
+} from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const Landing = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     return (
         <>
-            <Box pos="relative" overflow="hidden" bg={"#1a202c"} h={"100vh"} fontFamily={"Poppins"}>
+            <Helmet>
+                <title>TheRoom</title>
+            </Helmet>
+            <Box
+                pos="relative"
+                overflow="hidden"
+                bg={"#1a202c"}
+                h={"100vh"}
+                fontFamily={"Poppins"}
+            >
                 <Box maxW="7xl" mx="auto">
                     <Box
                         pos="relative"
@@ -33,17 +42,27 @@ const Landing = () => {
                                 mx="auto"
                             >
                                 <chakra.h1
-                                    fontSize={{ base: "4xl", sm: "5xl", md: "6xl" }}
+                                    fontSize={{
+                                        base: "4xl",
+                                        sm: "5xl",
+                                        md: "6xl",
+                                    }}
                                     letterSpacing="tight"
                                     lineHeight="short"
                                     fontWeight="extrabold"
-                                    color={useColorModeValue("gray.900", "white")}
+                                    color={useColorModeValue(
+                                        "gray.900",
+                                        "white"
+                                    )}
                                 >
                                     <chakra.span
-                                        display={{ base: "block", xl: "inline" }}
+                                        display={{
+                                            base: "block",
+                                            xl: "inline",
+                                        }}
                                         color={"#cbceeb"}
                                     >
-                                        Galadriel Video
+                                        TheRoom
                                     </chakra.span>
                                     <br />
                                 </chakra.h1>
@@ -55,10 +74,16 @@ const Landing = () => {
                                     color="gray.500"
                                     lineHeight="base"
                                 >
-                                    A secure app that allows student and lectures present their projects.
+                                    A secure app that allows student and
+                                    lectures schedule online classes, upload
+                                    resources and join class meetings at ease
                                 </chakra.p>
                                 <Stack
-                                    direction={{ base: "column", sm: "column", md: "row" }}
+                                    direction={{
+                                        base: "column",
+                                        sm: "column",
+                                        md: "row",
+                                    }}
                                     mb={{ base: 4, md: 8 }}
                                     spacing={{ base: 4, md: 2 }}
                                     justifyContent="center"
@@ -67,7 +92,7 @@ const Landing = () => {
                                         bg="teal"
                                         color={"gray.900"}
                                         size="lg"
-                                        onClick={() => navigate('/login')}
+                                        onClick={() => navigate("/login")}
                                     >
                                         Login
                                     </Button>
@@ -75,7 +100,7 @@ const Landing = () => {
                                         bg="white"
                                         color={"gray.900"}
                                         size="lg"
-                                        onClick={() => navigate('/register')}
+                                        onClick={() => navigate("/register")}
                                     >
                                         Register
                                     </Button>
@@ -87,6 +112,6 @@ const Landing = () => {
             </Box>
         </>
     );
-}
+};
 
-export default Landing
+export default Landing;

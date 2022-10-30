@@ -28,6 +28,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import UploadResource from "../components/rooms/UploadResource";
+import {Helmet} from "react-helmet"
 
 const Room = () => {
     const [now, setNow] = useState(DateTime.local());
@@ -113,6 +114,9 @@ const Room = () => {
 
     return (
         <>
+        <Helmet>
+                <title>TheRoom | Room</title>
+            </Helmet>
             <UploadResource
                 open={showModal}
                 setOpen={setShowModal}
@@ -142,17 +146,17 @@ const Room = () => {
                     <HomeIconCard
                         IconName={MdAddBox}
                         text={"Join Meeting"}
-                        onClick={() => navigate("/join-meeting")}
+                        onClick={() => navigate("/meeting-view")}
                     />
                     <HomeIconCard
                         IconName={MdCloudDownload}
                         text={"Add New Resource"}
                         onClick={() => setShowModal(true)}
                     />
-                    <HomeIconCard
+                    {/* <HomeIconCard
                         IconName={BiBookAdd}
                         text={"View All Resources"}
-                    />
+                    /> */}
                 </HStack>
                 <Text fontSize={"4xl"} mb={"2"}>
                     Resources

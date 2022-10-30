@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getToken = async () => {
     const resp = await axios.get(
-        "https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu72.gitpod.io/get-token"
+        "https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu73.gitpod.io/get-token"
     );
     let token = resp.data;
     return token;
@@ -15,7 +15,7 @@ export const createMeeting = async ({ token }) => {
     const data = { token };
 
     const resp = await axios.post(
-        "https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu72.gitpod.io/create-meeting",
+        "https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu73.gitpod.io/create-meeting",
         data
     );
 
@@ -23,8 +23,10 @@ export const createMeeting = async ({ token }) => {
 };
 
 export const validateMeeting = async ({ meetingId, token }) => {
+    console.log(meetingId)
+    console.log(token)
     let resp = await axios.get(
-        `https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu72.gitpod.io/validate-meeting/${token}/${meetingId}`
+        `https://5000-vingitonga-galadriel-v4n5vuqh8jk.ws-eu73.gitpod.io/validate-meeting/${token}/${meetingId}`
     );
 
     return resp.data ? resp.data?.isValidated : false;

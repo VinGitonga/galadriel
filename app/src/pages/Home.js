@@ -8,6 +8,7 @@ import { FiEdit3 } from "react-icons/fi";
 import { TbArrowsJoin } from "react-icons/tb";
 import NewRoom from "../components/rooms/NewRoom";
 import JoinRoom from "../components/rooms/JoinRoom";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
     const [now, setNow] = useState(DateTime.local());
@@ -28,6 +29,9 @@ const Home = () => {
 
     return (
         <>
+        <Helmet>
+            <title>TheRoom | Home</title>
+        </Helmet>
             <NewRoom open={showModal} setOpen={setShowModal} />
             <JoinRoom open={showJoinModal} setOpen={setShowJoinModal} />
             <Box style={{ paddingLeft: "200px" }} py={4} fontFamily={"Poppins"}>
@@ -39,7 +43,7 @@ const Home = () => {
                     <HomeIconCard
                         IconName={MdAddBox}
                         text={"Join Meeting"}
-                        onClick={() => navigate("/join-meeting")}
+                        onClick={() => navigate("/meeting-view")}
                     />
                     <HomeIconCard
                         IconName={FiEdit3}

@@ -60,6 +60,8 @@ app.post("/create-meeting", async (req, res) => {
 
 app.get("/validate-meeting/:token/:roomId", async (req, res) => {
     const { roomId, token } = req.params;
+    console.log(token)
+    console.log(roomId);
     let isValidated = false;
 
     const options = {
@@ -74,7 +76,11 @@ app.get("/validate-meeting/:token/:roomId", async (req, res) => {
     const response = await fetch(url, options);
     const data = await response.json();
 
+    console.log(data);
+
     isValidated = data?.roomId === roomId ? true : false;
+
+    console.log(isValidated)
 
     res.status(200).json({ isValidated });
 });

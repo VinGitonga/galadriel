@@ -18,25 +18,21 @@ import {
 } from "@chakra-ui/react";
 import Chats from "../chats";
 import { ImPhoneHangUp } from "react-icons/im";
-import Navbar from "../Navbar";
 import Card from "../common/Card";
 import MeetingParticipant from "../participants";
 import ActionsCard from "../common/ActionsCard";
 import ParticipantsView from "./ParticipantsView";
 import { useMeeting, useParticipant } from "@videosdk.live/react-sdk";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import Screenshare from "./Screenshare";
 import { chunk } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { BiLogOutCircle } from "react-icons/bi";
-import { query, collection, where, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
 
-const MeetingView = ({ meetingId }) => {
+const MeetingView = ({ meetingId, onMeetLeaveAdd }) => {
     const screenShareRef = useRef(null);
     const navigate = useNavigate();
     const toast = useToast();
-    const [meetingDetails, setMeetingDetails] = useState(null);
 
     /**
      * Custom toast with prefed fields
@@ -51,7 +47,8 @@ const MeetingView = ({ meetingId }) => {
     };
 
     function onMeetingLeave() {
-        customToast({ title: "You have left the meeting" });
+        customToast({ text: "You have left the meeting" });
+        onMeetLeaveAdd()
         navigate("/home");
     }
 
@@ -74,19 +71,20 @@ const MeetingView = ({ meetingId }) => {
         console.log(" onEntryRequested", participantId, name);
     }
     function onEntryResponded(participantId, name) {
-        console.log(" onEntryResponded", participantId, name);
+        // console.log(" onEntryResponded", participantId, name);
     }
     function onRecordingStarted() {
-        customToast({ text: "Meeting Recording has started" });
+        // customToast({ text: "Meeting Recording has started" });
     }
     function onRecordingStopped() {
-        customToast({ text: "Meeting Recording has stopped" });
+        // customToast({ text: "Meeting Recording has stopped" });
     }
     function onChatMessage(data) {
         console.log(" onChatMessage", data);
     }
     function onMeetingJoined() {
-        customToast({ text: "Welcome to the Meeting" });
+        // customToast({ text: "Welcome to the Meeting" });
+        console.log("Yooo")
     }
     function onMeetingLeft() {
         console.log("onMeetingLeft");
@@ -179,27 +177,17 @@ const MeetingView = ({ meetingId }) => {
         }
     }, [screenShareStream, screenShareOn]);
 
-    const getMeetingDetails = async () => {
-        const meetsRef = collection(db, "meetings");
-        const q = query(meetsRef, where("meetingId", "==", meetingId));
-        const querySnap = await getDocs(q);
-        const meets = [];
-        querySnap.forEach((item) => {
-            meets.push({ id: item.id, ...item.data() });
-        });
+    
 
-        setMeetingDetails(meets[0]);
-    };
 
-    useEffect(() => getMeetingDetails(), [meetingId]);
+    
 
     return (
         <>
-            <Navbar />
             <Box px={4} py={4} mx="auto" fontFamily={"Poppins"}>
                 <Flex align={"center"} justify={"space-between"}>
                     <Heading as={"h2"} size={"xl"}>
-                        {meetingDetails?.meetingTitle || "Test Meet"}
+                        {"Meeting Now"}
                     </Heading>
                     <Box>
                         <Text mr={2}>{meetingId}</Text>

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@videosdk.live/react-sdk": "0.1.43"
+  }
+}

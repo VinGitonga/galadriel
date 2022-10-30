@@ -26,7 +26,7 @@ const Navbar = () => {
             >
                 <Icon w={6} h={6} as={FcVideoCall} mr={3} color={"gray.800"} />
                 <Text fontWeight="semibold" fontSize="lg" color={"teal.500"}>
-                    Galadriel
+                    TheRoom
                 </Text>
             </Flex>
             <Flex align="center" px="4" py="3">

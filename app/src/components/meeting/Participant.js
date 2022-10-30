@@ -24,6 +24,7 @@ export default function Participant({ participantId }) {
         micOn,
         isLocal,
         webcamOn,
+        
     } = useParticipant(participantId, { onStreamDisabled, onStreamEnabled });
 
     const webcamMediaStream = useMemo(() => {

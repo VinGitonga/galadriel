@@ -6,6 +6,7 @@ import { SimpleGrid } from "@chakra-ui/react";
 
 export default function ParticipantsView() {
     const { participants } = useMeeting();
+    console.log(participants)
     return (
         <SimpleGrid columns={[1, null, 2]} spacing={"10"}>
             {chunk([...participants.keys()]).map((k) => (
