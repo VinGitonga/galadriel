@@ -21,6 +21,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+    res.send("Hey this is my API running 🥳");
+});
+
 app.get("/get-token", async (req, res) => {
     const options = {
         expiresIn: "10m",
@@ -60,7 +64,7 @@ app.post("/create-meeting", async (req, res) => {
 
 app.get("/validate-meeting/:token/:roomId", async (req, res) => {
     const { roomId, token } = req.params;
-    console.log(token)
+    console.log(token);
     console.log(roomId);
     let isValidated = false;
 
@@ -80,7 +84,7 @@ app.get("/validate-meeting/:token/:roomId", async (req, res) => {
 
     isValidated = data?.roomId === roomId ? true : false;
 
-    console.log(isValidated)
+    console.log(isValidated);
 
     res.status(200).json({ isValidated });
 });
@@ -88,3 +92,6 @@ app.get("/validate-meeting/:token/:roomId", async (req, res) => {
 app.listen(5000, () => {
     console.log(`Server listening at port 5000`);
 });
+
+
+export default app
