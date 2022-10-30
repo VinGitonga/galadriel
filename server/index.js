@@ -1,15 +1,13 @@
-import express from "express";
-import jwt from "jsonwebtoken";
-import cors from "cors";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-import fetch from "node-fetch";
+const express = require("express")
+const jwt = require("jsonwebtoken")
+const cors = require("cors")
+const path = require("path")
+const fetch = require("node-fetch")
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = url.fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
 const VIDEOSDK_API_KEY = process.env.VIDEOSDK_API_KEY;
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -94,6 +92,4 @@ app.get("/validate-meeting/:token/:roomId", async (req, res) => {
 });
 
 
-
-
-export default app
+module.exports = app
